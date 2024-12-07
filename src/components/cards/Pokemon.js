@@ -1,39 +1,43 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList } from "react-native";
 import { pokemonList } from './constants';
 
 class Pokemon extends Component {
-
     render() {
         return (
             <View style={styles.pokeContainer}>
-                {Object.entries(pokemonList).map(([key, pokemon], index) => (
-                    <View key={key} style={styles.card}>
-                        <Text style={styles.pokeName}># {index + 1} - {pokemon.name}</Text>
-                        <Image
-                            source={{ uri: `https://img.pokemondb.net/sprites/black-white/normal/${pokemon.name.toLowerCase()}.png` }}
-                            style={{ width: 80, height: 80 }}
-                        />
-                    </View>
-                ))}
+                <FlatList
+                    data={pokemonList.filter(({name}) => name.toLowerCase().includes(this.props.searchData.toLowerCase()))}
+                    renderItem={({ item }) =>
+                        <React.Fragment>
+                            <View style={styles.card}>
+                                <Text style={styles.pokeName}>{item.name}</Text>
+                                <Image
+                                    source={{ uri: `https://img.pokemondb.net/sprites/black-white/normal/${item.name.toLowerCase()}.png` }}
+                                    style={{ width: 80, height: 80 }}
+                                />
+                            </View>
+                        </React.Fragment>
+                        
+                    } 
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </View>
         )
-
     }
 }
 
 const styles = StyleSheet.create({
     pokeContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        padding: 15
+        flex: 1,
+        width: '100%'
     },
     card: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '100%',
         backgroundColor: '#f1f1f1',
-        marginBottom: 15,
+        marginHorizontal: 5,
+        marginBottom: 20,
         borderRadius: 5,
         padding: 10,
         // Sombra para iOS
@@ -44,7 +48,7 @@ const styles = StyleSheet.create({
         // Sombra para Android
         elevation: 5,
     },
-    pokeName : {
+    pokeName: {
         fontSize: 16,
         fontWeight: '800'
     }
